@@ -17,6 +17,17 @@ from webdriver_manager.microsoft import EdgeChromiumDriverManager
 def create_edge_driver():
     return webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
 
+
+# Return an alert object
+def wait_until_alert(driver, timeout=3):
+    WebDriverWait(driver, timeout).until(EC.alert_is_present(),"Can not find an alert window")
+    return driver.switch_to.alert
+
+def wait_unttil_window(driver, title:str, timeout=3):
+    wait = WebDriverWait(driver, timeout)
+    return wait.until(lambda x: get_window_handle(x, title), f"Can not find a window({title})")
+    
+
 # locator: (By.ID, "myDynamicElement")
 # timemout: maximum time to wait until locator exists
 # return True if success otherwise False
@@ -81,6 +92,15 @@ def get_window_handle(driver, title):
     driver.switch_to.window(current)
     return result
 
+
+def get_window_handle_until(driver, title, maxtry=10):
+    import time
+    for i in range(maxtry):        
+        time.sleep(1)
+        handle = get_window_handle(driver, title)
+        if handle:
+            return handle
+
 def go_window(driver, title):
     handle = get_window_handle(driver, title)    
     if not handle:
@@ -98,15 +118,17 @@ class Window:
     def __init__(self, driver, title):
         self.driver = driver
         self.prev_window_handle = driver.current_window_handle
-        self.next_window_handle = get_window_handle(driver, title)
+        self.next_window_handle = wait_unttil_window(driver, title)       
         
-    def __enter__(self):                
+    def __enter__(self):
         self.driver.switch_to.window(self.next_window_handle)
-        # print("entered: {}".format(self.driver.title))
+        
                 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.driver.switch_to.window(self.prev_window_handle)
         # print("exited: {}".format(self.driver.title))
+
+
 
 class Frame:
     def __init__(self, driver, locator):

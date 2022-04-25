@@ -93,6 +93,21 @@ def get_window_handle(driver, title):
     return result
 
 
+def selenium_close_other_windows(driver, whitelist=[]):
+    current = driver.current_window_handle
+
+    for handle in driver.window_handles:
+        if handle == current:
+            continue
+        
+        driver.switch_to.window(handle)
+        if driver.title in whitelist:
+            continue
+
+        driver.close()
+    
+    driver.switch_to.window(current)
+
 def get_window_handle_until(driver, title, maxtry=10):
     import time
     for i in range(maxtry):        

@@ -84,10 +84,8 @@ def is_overlapped(rect_a, rect_b):
 
 # [func] will be called every [interval] secs for [timeout] secs
 def wait_until(func, timeout=10, interval=0.5):
-
-  print(f"wait_until) timeout={timeout}, interval={interval}")
-
   start = time.time()
+  curr = 0
   while True:
     
     res = func()
@@ -95,14 +93,15 @@ def wait_until(func, timeout=10, interval=0.5):
       return res
       
     curr = time.time() - start
-    print(f"wait_until) curr={curr:.4f}")
+    # print(f"wait_until) curr={curr:.4f}")
 
     if curr > timeout:
       break
     
     # every 500ms
     time.sleep(interval)
-
+  
+  print(f"wait_until) It takes {curr}. timeout={timeout}, interval={interval}")
   return res
     
 # --------------------------
@@ -159,8 +158,8 @@ def img_wait_until(img, timeout=0.1, grayscale=True, confidence=.9):
   return wait_until(lambda : img_find(img,grayscale=grayscale, confidence=confidence), timeout=timeout)
 
 def img_click(img, timeout=0.1, grayscale=True, confidence=.9):
-  center = img_wait_until(img, timeout=timeout, grayscale=grayscale, confidence=confidence)
-  print(f"img) click center={center} of img={img}")
+  print(f"img) try to click {img}")
+  center = img_wait_until(img, timeout=timeout, grayscale=grayscale, confidence=confidence)  
   if center is None:
     raise Exception(f"Can not find {img}")
   pyautogui.click(center)
@@ -207,6 +206,7 @@ def window_find_exact(title:str):
     return win32gui.FindWindow(None, title)
 
 def window_wait_until(title:str, timeout=10):
+  print(f"window) try to find {title}")
   return wait_until(lambda: win32gui.FindWindow(None, title), timeout)
 
 def window_find_first(title:str):

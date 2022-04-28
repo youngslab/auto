@@ -14,8 +14,24 @@ from selenium import webdriver
 from selenium.webdriver.edge.service import Service
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 
-def create_edge_driver():
-    return webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
+
+
+# options.add_argument('headless')
+    # options.add_argument('disable-gpu')    
+    # options.use_chromium = True
+    # options.binary_location = r"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
+    # driver = webdriver.Edge(options=options)
+
+
+def create_edge_driver(headless=False):    
+    options = webdriver.EdgeOptions()
+    # level 3 is lowest value for log-level
+    options.add_argument('log-level=3')
+    if headless:
+        options.add_argument('headless')
+        options.add_argument('disable-gpu')    
+        
+    return webdriver.Edge(options=options, service=Service(EdgeChromiumDriverManager().install()))
 
 
 # Return an alert object
@@ -27,6 +43,9 @@ def wait_unttil_window(driver, title:str, timeout=3):
     wait = WebDriverWait(driver, timeout)
     return wait.until(lambda x: get_window_handle(x, title), f"Can not find a window({title})")
     
+def wait_until_webpage(driver, url:str, timeout=3):
+    wait = WebDriverWait(driver, timeout)
+    return wait.until(lambda x: x.current_url == url, f"Can not reach to ({url})")
 
 # locator: (By.ID, "myDynamicElement")
 # timemout: maximum time to wait until locator exists
@@ -74,7 +93,7 @@ def send_keys_element(driver, elem, text):
 
 def go(driver, page):
     driver.get(page)
-    driver.implicitly_wait(2)
+    driver.implicitly_wait(5)
 
 
 # WINDOW(TAB) API

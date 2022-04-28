@@ -240,16 +240,15 @@ def window_select(title:str, timeout = 60):
 
 
 if __name__ == '__main__':
-  
-  path = 'C:\\Users\\Jaeyoung\\dev\\incon_project\\safeg2b\\res'
-  x = 'safeg2b_2_3_bid_finger_print_button.png'
-  y = 'safeg2b_2_5_bid_notice_yes_checkbox.png'
+  pass
+  # x = 'safeg2b_2_3_bid_finger_print_button.png'
+  # y = 'safeg2b_2_5_bid_notice_yes_checkbox.png'
 
-  pos = img_find_all(f"{path}\\{y}")
-  print(pos)
-
-  # pos = img_find(f"{path}\\{y}")
+  # pos = img_find_all(f"{path}\\{y}")
   # print(pos)
+
+  # # pos = img_find(f"{path}\\{y}")
+  # # print(pos)
 
 
 
